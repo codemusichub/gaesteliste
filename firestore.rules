@@ -3,7 +3,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Admin-E-Mails: muss mit ADMIN_EMAILS in src/config.ts übereinstimmen.
     function isAdmin() {
-      return request.auth != null && request.auth.token.email in ['admin@gaesteliste.app'];
+      return request.auth != null && request.auth.token.email in ['events@code-music.com'];
     }
     function isKasse() {
       return request.auth != null && request.auth.token.email == 'kasse@gaesteliste.app';

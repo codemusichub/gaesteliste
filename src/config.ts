@@ -10,7 +10,7 @@ export const firebaseConfig = {
 }
 
 // Wer Admin ist. Muss mit der Liste in firestore.rules übereinstimmen.
-export const ADMIN_EMAILS = ['admin@gaesteliste.app']
+export const ADMIN_EMAILS = ['events@code-music.com']
 
 // Login der Kasse; das Passwort ist die Kassen-PIN.
 export const KASSE_EMAIL = 'kasse@gaesteliste.app'
