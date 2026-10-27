@@ -1,12 +1,12 @@
 // Firebase-Web-Konfiguration aus der Firebase-Konsole (Projekteinstellungen > Meine Apps).
 // Diese Werte sind nicht geheim; geschützt werden die Daten durch firestore.rules.
 export const firebaseConfig = {
-  apiKey: 'DEMO_API_KEY',
-  authDomain: 'demo-gaesteliste.firebaseapp.com',
-  projectId: 'demo-gaesteliste',
-  storageBucket: 'demo-gaesteliste.appspot.com',
-  messagingSenderId: '000000000000',
-  appId: '1:000000000000:web:0000000000000000',
+  apiKey: 'AIzaSyBAs_A7C9TI8wLIjY2SRpom0vD7_ER7WpI',
+  authDomain: 'gaesteliste-e6b34.firebaseapp.com',
+  projectId: 'gaesteliste-e6b34',
+  storageBucket: 'gaesteliste-e6b34.firebasestorage.app',
+  messagingSenderId: '775414693399',
+  appId: '1:775414693399:web:fc4160e7fdce325ff9e652',
 }
 
 // Wer Admin ist. Muss mit der Liste in firestore.rules übereinstimmen.
