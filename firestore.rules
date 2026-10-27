@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Admin-E-Mails: muss mit ADMIN_EMAILS in src/config.ts übereinstimmen.
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email in ['admin@gaesteliste.app'];
+    }
+    function isKasse() {
+      return request.auth != null && request.auth.token.email == 'kasse@gaesteliste.app';
+    }
+
+    // Admin darf alles, Kasse darf alles lesen.
+    match /{collection}/{id} {
+      allow read: if isAdmin() || isKasse();
+      allow write: if isAdmin();
+    }
+
+    // Kasse darf nur einchecken (Check-in-Felder ändern), nichts eintragen oder löschen.
+    match /entries/{id} {
+      allow update: if isKasse()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checkedInAt', 'checkedInBy', 'plus'])
+        && request.resource.data.plus.size() == resource.data.plus.size();
+    }
+  }
+}
