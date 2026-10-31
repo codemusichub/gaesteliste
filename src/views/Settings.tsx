@@ -9,7 +9,7 @@ import { Field, Sheet, SyncBadge, TicketBadge } from '../ui'
 const COLORS = ['#3ddc97', '#ffb547', '#c08bff', '#4cc9f0', '#ff6b8b', '#f2f2f5', '#ffd23f', '#7d8cff']
 
 export function SettingsPage() {
-  const { ticketTypes, settings } = useData()
+  const { ticketTypes, settings, events, entries, guests } = useData()
   const [edit, setEdit] = useState<TicketType | 'new' | null>(null)
   const [names, setNames] = useState((settings.addedByNames ?? []).join(', '))
   const kasseUrl = location.href.split('#')[0] + '#/kasse'
@@ -26,11 +26,31 @@ export function SettingsPage() {
     }
   }
 
+  // Komplett-Backup aller Daten als JSON-Datei (nur lesen, ändert nichts)
+  const backup = () => {
+    const data = { exportedAt: new Date().toISOString(), events, entries, guests, ticketTypes, settings }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `gaesteliste-backup-${new Date().toISOString().slice(0, 16).replace(':', '-')}.json`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000)
+  }
+
   return (
     <div className="page-pad">
       <div className="topbar">
         <div className="topbar-title"><h1>Einstellungen</h1></div>
         <SyncBadge />
+      </div>
+
+      <h3>Datensicherung</h3>
+      <div className="card">
+        <p className="muted small">Speichert alle Veranstaltungen, Gäste und Einträge als Datei auf diesem Gerät. Daraus lässt sich im Notfall alles wiederherstellen.</p>
+        <p className="small">{events.length} Veranstaltungen · {guests.length} Gäste · {entries.length} Einträge</p>
+        <button className="btn primary" onClick={backup}>💾 Komplett-Backup herunterladen</button>
       </div>
 
       <h3>Kassen-Zugang</h3>

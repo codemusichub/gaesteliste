@@ -26,7 +26,7 @@ import { exportEvent } from '../export'
 type Filter = 'all' | 'open' | 'in'
 
 export function EventPage({ role, eventId, kasseMode }: { role: Role; eventId?: string; kasseMode?: boolean }) {
-  const { events, entries, guestMap, eventMap } = useData()
+  const { events, entries, guestMap, eventMap, ticketTypes } = useData()
   const ev = (eventId && eventMap.get(eventId)) || currentEvent(events)
   const [q, setQ] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
@@ -53,6 +53,21 @@ export function EventPage({ role, eventId, kasseMode }: { role: Role; eventId?: 
     if (filter === 'in' && checkedInPersons(e) === 0) return false
     return matchesSearch(guestMap.get(e.guestId), q)
   })
+  // Personen pro Ticketart (Hauptgast und Begleitungen einzeln gezählt)
+  const perTicket = useMemo(() => {
+    const m = new Map<string, { listed: number; came: number }>()
+    const add = (id: string, at: number | null | undefined) => {
+      const v = m.get(id) ?? { listed: 0, came: 0 }
+      v.listed++
+      if (at) v.came++
+      m.set(id, v)
+    }
+    list.forEach((e) => {
+      add(e.ticketTypeId, e.checkedInAt)
+      e.plus.forEach((p) => add(p.ticketTypeId, p.checkedInAt))
+    })
+    return ticketTypes.filter((t) => m.has(t.id) || !t.archived).map((t) => ({ tt: t, ...(m.get(t.id) ?? { listed: 0, came: 0 }) }))
+  }, [list, ticketTypes])
   const openCount = list.filter((e) => checkedInPersons(e) < persons(e)).length
   const inCount = list.filter((e) => checkedInPersons(e) > 0).length
 
@@ -105,6 +120,19 @@ export function EventPage({ role, eventId, kasseMode }: { role: Role; eventId?: 
           <span className="muted"> Personen da</span>
         </div>
         <div className="bar"><span style={{ width: total ? `${(inside / total) * 100}%` : 0 }} /></div>
+        {total > 0 && (
+          <div className="per-ticket">
+            {perTicket.map(({ tt, listed, came }) => (
+              <div key={tt.id} className="per-ticket-row">
+                <TicketBadge tt={tt} />
+                <span>
+                  <b>{listed}</b> {listed === 1 ? 'Person' : 'Personen'}
+                  <span className="muted"> · {came} da</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
         {isAdmin && ev.deadline && (
           <div className={'small ' + (deadlinePassed(ev) ? 'warn' : 'muted')}>
             Deadline {fmtDateTime(new Date(ev.deadline).getTime())}{deadlinePassed(ev) ? ' · abgelaufen' : ''}

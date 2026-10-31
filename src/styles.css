@@ -176,3 +176,5 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .rate-row .bar { margin-top: 6px; height: 6px; }
 .text-btn { background: none; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; color: var(--muted); min-height: 40px; }
 .offline-banner { background: color-mix(in srgb, var(--danger) 16%, transparent); border: 1px solid color-mix(in srgb, var(--danger) 50%, transparent); color: var(--text); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; font-size: 14px; }
+.per-ticket { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+.per-ticket-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 15px; }
