@@ -21,6 +21,7 @@ import { Chips, Empty, OfflineBanner, Sheet, SyncBadge, TicketBadge, navigate } 
 import { EntryForm } from './EntryForm'
 import { EventForm } from './Events'
 import { ImportSheet } from './ImportSheet'
+import { FileImport } from './FileImport'
 import { exportEvent } from '../export'
 
 type Filter = 'all' | 'open' | 'in'
@@ -34,6 +35,7 @@ export function EventPage({ role, eventId, kasseMode }: { role: Role; eventId?: 
   const [menu, setMenu] = useState(false)
   const [editEvent, setEditEvent] = useState(false)
   const [importing, setImporting] = useState(false)
+  const [fileImport, setFileImport] = useState(false)
   const isAdmin = role === 'admin' && !kasseMode
 
   const list = useMemo(() => (ev ? entries.filter((e) => e.eventId === ev.id && e.status === 'approved') : []), [entries, ev])
@@ -183,6 +185,7 @@ export function EventPage({ role, eventId, kasseMode }: { role: Role; eventId?: 
           <div className="menu">
             <button onClick={() => navigate(`/event/${ev.id}/dashboard`)}>📊 Dashboard / Anwesenheit</button>
             <button onClick={() => (setMenu(false), setImporting(true))}>↺ Gäste aus anderer Veranstaltung übernehmen</button>
+            <button onClick={() => (setMenu(false), setFileImport(true))}>⬆︎ Liste aus Datei importieren</button>
             <button onClick={() => (setMenu(false), exportEvent(ev.id))}>⬇︎ Als Excel exportieren</button>
             <button onClick={() => navigate(`/kasse/${ev.id}`)}>👁 Kassenansicht öffnen</button>
             <button onClick={() => (setMenu(false), setEditEvent(true))}>✎ Veranstaltung bearbeiten</button>
@@ -190,6 +193,7 @@ export function EventPage({ role, eventId, kasseMode }: { role: Role; eventId?: 
         </Sheet>
       )}
       {editEvent && <EventForm event={ev} onClose={() => setEditEvent(false)} />}
+      {fileImport && <FileImport eventId={ev.id} onClose={() => setFileImport(false)} />}
       {importing && <ImportSheet targetId={ev.id} onClose={() => setImporting(false)} />}
     </div>
   )
